@@ -1,0 +1,54 @@
+<?php
+// Your code here!
+
+/**
+ * undocumented class
+ *
+ * @package default
+ * @author `g:snips_author`
+ */
+interface iCreateUser
+{
+    public function create();
+}
+
+
+class createAdminBe implements iCreateUser{
+    public function create(){
+        echo 'create admin, create his power';
+    }
+}
+ 
+class createCustomerBe implements iCreateUser{
+    public function create(){
+        echo 'create customer , create points ';
+    }
+}
+
+
+class User {
+    public $name;
+    private $iCreateUserBe;
+    public function __construct(iCreateUser $iCreateUserBe){
+        $this->iCreateUserBe = $iCreateUserBe;
+    }
+    
+    public function create(){
+        $this->iCreateUserBe->create();
+    }
+    
+    
+    
+}
+
+
+$user = new User(new createAdminBe);
+
+$user->create();
+echo "\n";
+$user2 = new User(new createCustomerBe);
+
+$user2->create();
+
+
+?>
