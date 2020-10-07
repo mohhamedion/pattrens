@@ -1,0 +1,118 @@
+<?php
+ 
+class Student {
+    private $firstname;
+    private $lastname;
+    
+    public function __construct($firstname,$lastname){
+        $this->firstname= $firstname;
+        $this->lastname= $lastname;
+    }
+    
+    public function getFullName(){
+        return $this->firstname. ' '. $this->lastname;
+    }
+    
+}
+
+class StudentList {
+    private $studentsList = [];
+    
+    
+    public function addStudent(Student $student){
+        $this->studentsList[] = $student; 
+    }
+    
+  
+    
+     public function getStudent($index){
+         if(isset($this->studentsList[$index])){
+             return $this->studentsList[$index];
+         }
+         return null;
+         
+    }
+    
+      public function getCount(){
+            
+            return count($this->studentsList);
+    }
+    
+    
+   
+}
+
+class StudnetListIterator {
+    private $studentList;
+    private $currentStudent= 0;
+    public function __construct($studentList){
+        $this->studentsList = $studentList;
+    }
+    
+    public function getCurrentStudent(){
+        if($this->currentStudent<$this->studentsList->getCount()){
+            return $this->studentsList->getStudent($this->currentStudent);
+        }
+        return null;
+    }
+    
+    
+    public function getNextStudent(){
+         
+        if($this->hasNextStudent()){
+            
+           return $this->studentsList->getStudent($this->currentStudent++);
+           
+        }
+        return null;
+    }
+    
+    public function hasNextStudent(){
+        if($this->studentsList->getCount()>$this->currentStudent){
+            return true;
+        }
+        return false;
+    }
+}
+
+class StudnetRecerveListIterator extends StudnetListIterator{
+    
+     public function __construct(StudentList $studentList){
+         $this->studentsList = $studentList;
+         $this->currentStudent = $this->studentsList->getCount()-1;
+     }
+     
+     public function hasNextStudent(){
+         if($this->currentStudent>=0){
+             return true;
+         }
+         return false;
+     }
+     
+     public function getNextStudent(){
+        return $this->studentsList->getStudent($this->currentStudent--);
+     }
+     
+}
+
+
+$studentList = new StudentList();
+
+$studentList->addStudent(new Student('Mohamad','Asaly'));
+$studentList->addStudent(new Student('Ivan','Ivanavich'));
+$studentList->addStudent(new Student('Alexye','Alexyvich'));
+$studentIteator = new StudnetListIterator($studentList);
+$studentReserveIteator = new StudnetRecerveListIterator($studentList);
+ 
+
+while($studentIteator->hasNextStudent()){
+  $student =  $studentIteator->getNextStudent();
+  echo $student->getFullName() . "\n";
+}
+
+while($studentReserveIteator->hasNextStudent()){
+  $student =  $studentReserveIteator->getNextStudent();
+  echo $student->getFullName() . "\n";
+}
+
+ ?>
