@@ -1,118 +1,197 @@
 <?php
+// Your code here!
  
-class Student {
+abstract class Person{
+   
+}
+
+ 
+ 
+class Student extends Person{
+    private $studentNumber;
     private $firstname;
     private $lastname;
     
-    public function __construct($firstname,$lastname){
+    public function __construct($firstname,$lastname,$studentNumber){
         $this->firstname= $firstname;
         $this->lastname= $lastname;
+        $this->studentNumber= $studentNumber;
+    }
+    
+   
+    
+     public function getFullName(){
+        return $this->firstname. ' '. $this->lastname;
+    }
+    public function accept(Visitor $visitor){
+        $visitor->visitStudent($this);
+    }
+    
+    public function getStudentNumber(){
+        return $this->studentNumber;
+    }
+    
+    
+    
+}
+
+class Employee extends Person{
+    private $sallary;
+    private $firstname;
+    private $lastname;
+    
+    public function __construct($firstname,$lastname,$sallary){
+        $this->firstname= $firstname;
+        $this->lastname= $lastname;
+        $this->sallary= $sallary;
+    }
+    
+    public function getSallary(){
+        return $this->sallary;
+    }
+   
+    
+     public function accept(Visitor $visitor){
+        $visitor->visitEmployee($this);
     }
     
     public function getFullName(){
         return $this->firstname. ' '. $this->lastname;
     }
-    
 }
 
-class StudentList {
-    private $studentsList = [];
+
+
+
+
+
+/**
+ * undocumented class
+ *
+ * @package default
+ * @author `g:snips_author`
+ */
+interface Visitor
+{
+    public function visitEmployee(Employee $employee);
+    public function visitStudent(Student $student);
+}
+
+
+
+class VisitorExporter implements Visitor
+{
+    public function visitEmployee(Employee $employee){
+        return $employee->getFullName();
+    }
+    public function visitStudent(Student $student){
+        return $student->getFullName();
+    }
+ }
+
+
+
+
+
+
+
+class PersonList {
+    private $personList = [];
     
-    
-    public function addStudent(Student $student){
-        $this->studentsList[] = $student; 
+    public function addPerson(Person $person){
+        $this->personList[] = $person; 
     }
     
-  
-    
-     public function getStudent($index){
-         if(isset($this->studentsList[$index])){
-             return $this->studentsList[$index];
+     public function getPerson($index){
+         if(isset($this->personList[$index])){
+             return $this->personList[$index];
          }
          return null;
          
     }
-    
       public function getCount(){
             
-            return count($this->studentsList);
+            return count($this->personList);
     }
     
-    
-   
 }
 
-class StudnetListIterator {
-    private $studentList;
-    private $currentStudent= 0;
-    public function __construct($studentList){
-        $this->studentsList = $studentList;
+class PersonListIterator {
+    private $personList;
+    private $currentPerson= 0;
+    public function __construct($personList){
+        $this->personList = $personList;
     }
     
-    public function getCurrentStudent(){
-        if($this->currentStudent<$this->studentsList->getCount()){
-            return $this->studentsList->getStudent($this->currentStudent);
+    public function getCurrentPerson(){
+        if($this->hasNextPerson()){
+            return $this->personList->getPerson($this->currentPerson);
         }
         return null;
     }
     
     
-    public function getNextStudent(){
+    public function getNextPerson(){
          
-        if($this->hasNextStudent()){
-            
-           return $this->studentsList->getStudent($this->currentStudent++);
-           
+        if($this->hasNextPerson()){
+           return $this->personList->getPerson($this->currentPerson++); 
         }
         return null;
     }
     
-    public function hasNextStudent(){
-        if($this->studentsList->getCount()>$this->currentStudent){
+    public function hasNextPerson(){
+        if($this->personList->getCount()>$this->currentPerson){
             return true;
         }
         return false;
     }
 }
 
-class StudnetRecerveListIterator extends StudnetListIterator{
+class PersonRecerveListIterator extends PersonListIterator{
     
-     public function __construct(StudentList $studentList){
-         $this->studentsList = $studentList;
-         $this->currentStudent = $this->studentsList->getCount()-1;
+     public function __construct(PersonList $personList){
+         $this->personList = $personList;
+         $this->currentPerson= $this->personList->getCount()-1;
      }
      
-     public function hasNextStudent(){
-         if($this->currentStudent>=0){
+     public function hasNextPerson(){
+         if($this->currentPerson>=0){
              return true;
          }
          return false;
      }
      
-     public function getNextStudent(){
-        return $this->studentsList->getStudent($this->currentStudent--);
+     public function getNextPerson(){
+        return $this->personList->getPerson($this->currentPerson--);
      }
      
 }
 
 
-$studentList = new StudentList();
+$personList = new PersonList();
 
-$studentList->addStudent(new Student('Mohamad','Asaly'));
-$studentList->addStudent(new Student('Ivan','Ivanavich'));
-$studentList->addStudent(new Student('Alexye','Alexyvich'));
-$studentIteator = new StudnetListIterator($studentList);
-$studentReserveIteator = new StudnetRecerveListIterator($studentList);
- 
+$personList->addPerson(new Student('Mohamad','Asaly',123132));
+$personList->addPerson(new Student('Ivan','Ivanavich',123123));
+$personList->addPerson(new Student('Alexye','Alexyvich',23132123));
+$personList->addPerson(new Employee('mark','zag',5000));
+$personList->addPerson(new Employee('Elon','Mask',1000));
+$personList->addPerson(new Employee('Jako','chan',8000));
+$personIteator = new PersonListIterator($personList);
+$personRecerveListIterator = new PersonRecerveListIterator($personList);
 
-while($studentIteator->hasNextStudent()){
-  $student =  $studentIteator->getNextStudent();
-  echo $student->getFullName() . "\n";
+$visitorExporter = new VisitorExporter();
+
+while($personIteator->hasNextPerson()){
+  $person =  $personIteator->getNextPerson();
+  echo $person->accept($visitorExporter) . "\n";
 }
 
-while($studentReserveIteator->hasNextStudent()){
-  $student =  $studentReserveIteator->getNextStudent();
-  echo $student->getFullName() . "\n";
-}
 
- ?>
+
+
+
+// while($personRecerveListIterator->hasNextPerson()){
+//   $student =  $personRecerveListIterator->getNextPerson();
+//   echo $student->getFullName() . "\n";
+// }
+?>
