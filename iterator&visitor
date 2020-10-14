@@ -2,15 +2,18 @@
 // Your code here!
  
 abstract class Person{
-   
+     public $firstname;
+     public $lastname;
+     public function getFullName(){
+        return $this->firstname. ' '. $this->lastname;
+    }
 }
 
  
  
 class Student extends Person{
     private $studentNumber;
-    private $firstname;
-    private $lastname;
+   
     
     public function __construct($firstname,$lastname,$studentNumber){
         $this->firstname= $firstname;
@@ -19,12 +22,8 @@ class Student extends Person{
     }
     
    
-    
-     public function getFullName(){
-        return $this->firstname. ' '. $this->lastname;
-    }
     public function accept(Visitor $visitor){
-        $visitor->visitStudent($this);
+       return $visitor->visitStudent($this);
     }
     
     public function getStudentNumber(){
@@ -37,8 +36,7 @@ class Student extends Person{
 
 class Employee extends Person{
     private $sallary;
-    private $firstname;
-    private $lastname;
+ 
     
     public function __construct($firstname,$lastname,$sallary){
         $this->firstname= $firstname;
@@ -52,12 +50,9 @@ class Employee extends Person{
    
     
      public function accept(Visitor $visitor){
-        $visitor->visitEmployee($this);
+       return $visitor->visitEmployee($this);
     }
-    
-    public function getFullName(){
-        return $this->firstname. ' '. $this->lastname;
-    }
+ 
 }
 
 
@@ -82,10 +77,10 @@ interface Visitor
 class VisitorExporter implements Visitor
 {
     public function visitEmployee(Employee $employee){
-        return $employee->getFullName();
+        return "Employee name: ".$employee->getFullName()." , his sallary: ".$employee->getSallary()."";
     }
     public function visitStudent(Student $student){
-        return $student->getFullName();
+        return "Student name: ".$student->getFullName()." , his  student card number: ".$student->getStudentNumber()."";
     }
  }
 
@@ -167,6 +162,8 @@ class PersonRecerveListIterator extends PersonListIterator{
      
 }
 
+
+ 
 
 $personList = new PersonList();
 
