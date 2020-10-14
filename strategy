@@ -43,12 +43,10 @@ class User {
 
 
 $user = new User(new createAdminBe);
-
 $user->create();
 echo "\n";
-$user2 = new User(new createCustomerBe);
-
-$user2->create();
+$admin = new User(new createCustomerBe);
+$admin->create();
 
 
 ?>
