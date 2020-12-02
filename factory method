@@ -33,3 +33,54 @@ class Sedan implements Car
 $factory = new SedanFactory();
 $car = $factory->makeCar();
 print $car->getType();
+
+
+
+
+-----------
+
+
+<?php
+// interfaces
+interface CardFactory{
+    public function createCard();
+}
+
+interface Card {
+    public function getNumber();
+    public function generatNumber();
+}
+
+
+/////////
+
+class CardFactoryForForginers implements CardFactory{
+
+    public function createCard(){
+        return new ForginersCard();
+    }
+    
+}
+
+class ForginersCard  implements Card{
+    public $number;
+    function __construct(){
+        $this->generatNumber();
+    }
+    public function getNumber(){
+        return $this->number;
+    }
+    public function generatNumber(){
+        $this->number = rand(111111111,10000000);
+    }
+}
+
+
+
+$factory  = new CardFactoryForForginers();
+$card = $factory->createCard();
+
+echo $card->getNumber();
+
+?>
+
