@@ -39,48 +39,86 @@ print $car->getType();
 
 -----------
 
-
 <?php
 // interfaces
-interface CardFactory{
+interface ICardFactory{
     public function createCard();
 }
 
-interface Card {
-    public function getNumber();
-    public function generatNumber();
+interface ICard {
+     public function generatNumber();
 }
 
 
-/////////
+abstract class BankCard {
+    public $card;
+    abstract public function createCard();
+    
+    public function getNumber(){
+        $this->card = $this->createCard();
+        
+        return $this->card->number;
+    }
+    
+}
 
-class CardFactoryForForginers implements CardFactory{
+///////
+class CardFactoryForForginers extends BankCard implements ICardFactory {
 
     public function createCard(){
         return new ForginersCard();
     }
     
 }
+class CardFactoryForRF extends BankCard implements ICardFactory {
+    
+    public function createCard(){
+        return new RFcard();    
+    }
+    
+}
 
-class ForginersCard  implements Card{
-    public $number;
+//
+
+ 
+
+class ForginersCard  implements ICard{
+     public $number;
     function __construct(){
         $this->generatNumber();
     }
-    public function getNumber(){
-        return $this->number;
-    }
+ 
     public function generatNumber(){
-        $this->number = rand(111111111,10000000);
+        $this->number = 'FG'.rand(111111111,10000000);
     }
+   
+    
 }
 
 
 
-$factory  = new CardFactoryForForginers();
-$card = $factory->createCard();
 
-echo $card->getNumber();
+class RFcard  implements ICard {
+          public $number;
 
-?>
+    function __construct(){
+        $this->generatNumber();
+    }
+    
+    public function generatNumber(){
+        $this->number = 'RF'.rand(22222222,22222222);
+    }
+  
+    
+}
+
+ 
+$card1 =  new CardFactoryForForginers();
+$card2 = new CardFactoryForRF();
+ 
+
+echo $card1->getNumber()."\n";
+echo $card2->getNumber();
+ 
+
 
