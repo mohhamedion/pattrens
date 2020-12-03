@@ -40,85 +40,108 @@ print $car->getType();
 -----------
 
 <?php
-// interfaces
-interface ICardFactory{
-    public function createCard();
-}
-
-interface ICard {
-     public function generatNumber();
-}
 
 
-abstract class BankCard {
-    public $card;
-    abstract public function createCard();
+interface YoutubeFactory{
+    public function createVideoLibrary();
+    public function createMuiscLibrary();
     
-    public function getNumber(){
-        $this->card = $this->createCard();
-        
-        return $this->card->number;
+}
+
+
+
+
+
+class YoutubeFactoryForAdults implements YoutubeFactory {
+    
+    public function createVideoLibrary(){
+        return new AdultVideoLibrary();
+    }
+    
+     public function createMuiscLibrary(){
+        return new AdultMusicLibrary();
     }
     
 }
 
-///////
-class CardFactoryForForginers extends BankCard implements ICardFactory {
-
-    public function createCard(){
-        return new ForginersCard();
-    }
-    
-}
-class CardFactoryForRF extends BankCard implements ICardFactory {
-    
-    public function createCard(){
-        return new RFcard();    
-    }
-    
-}
-
-//
-
+class YoutubeFactoryForChildren implements YoutubeFactory {
  
-
-class ForginersCard  implements ICard{
-     public $number;
-    function __construct(){
-        $this->generatNumber();
+     public function createVideoLibrary(){
+        return new ChiledVideoLibrary();
     }
- 
-    public function generatNumber(){
-        $this->number = 'FG'.rand(111111111,10000000);
-    }
-   
     
+     public function createMuiscLibrary(){
+        return new ChiledMusicLibrary();
+    }
+
 }
 
 
 
-
-class RFcard  implements ICard {
-          public $number;
-
-    function __construct(){
-        $this->generatNumber();
-    }
-    
-    public function generatNumber(){
-        $this->number = 'RF'.rand(22222222,22222222);
-    }
-  
-    
+interface ILibrary {
+    public function render();
 }
 
- 
-$card1 =  new CardFactoryForForginers();
-$card2 = new CardFactoryForRF();
- 
 
-echo $card1->getNumber()."\n";
-echo $card2->getNumber();
- 
+
+class AdultVideoLibrary implements ILibrary {
+    public $link;
+    public $author;
+    
+    public function render(){
+        return 'render adult video';
+    }
+}
+
+
+class AdultMusicLibrary implements ILibrary {
+    public $link;
+    public $author;
+    
+    public function render(){
+        return 'render adult music';
+    }
+}
+
+
+class ChiledVideoLibrary implements ILibrary {
+    public $link;
+    public $author;
+    
+    public function render(){
+        return 'render chiled video';
+    }
+}
+
+
+class ChiledMusicLibrary implements ILibrary {
+       public $link;
+       public $author;
+    
+    public function render(){
+        return 'render chiled music';
+    }
+}
+
+
+
+///client code
+    $visitorAge = rand(0,100);
+
+    if($visitorAge>=18){
+        $factory = new YoutubeFactoryForAdults();   
+    }else{
+        $factory = new YoutubeFactoryForChildren();   
+    }
+
+
+    $videoLibrary = $factory->createVideoLibrary();
+    $musicLibrary = $factory->createMuiscLibrary();
+    
+     echo $videoLibrary->render()."\n";
+     echo $musicLibrary->render();
+
+    
+    
 
 
