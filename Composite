@@ -1,3 +1,4 @@
+  
 <?php
 // Your code here!
 interface VideoInterface {
@@ -15,9 +16,22 @@ class Video implements VideoInterface{
     }
     
     public function play(){
-        echo 'playing '.$this->name."\n";
+        return 'playing '.$this->name."\n";
     }
     
+}
+
+
+class VideoProxy  implements VideoInterface {
+    public $videoList;
+    
+    public function __construct(PlayList $videoList){
+        $this->videoList = $videoList;
+    }
+    
+    public function play(){
+        return '1080 HD '.$this->videoList->playList[$this->videoList->currentVideo]->play();
+    }
 }
 
 
@@ -46,7 +60,7 @@ class PlayList {
     }
     
     public function play(){
-        $this->playList[$this->currentVideo]->play();
+        return   $this->playList[$this->currentVideo]->play();
      }
     
 }
@@ -55,16 +69,12 @@ class PlayList {
 
 
 $playList = new PlayList();
+$proxyList = new VideoProxy($playList);
 $playList->addVideo(new Video('gameOfTrhounse','asdmasd'));
 $playList->addVideo(new Video('gameOfTrhounse2','asdmasd'));
 $playList->addVideo(new Video('gameOfTrhounse3','asdmasd'));
 $playList->addVideo(new Video('gameOfTrhounse4','asdmasd'));
 
-$playList->play();
-
-
-
-
-
-
-?>
+echo $playList->play();
+$playList->next();
+echo $proxyList->play();
