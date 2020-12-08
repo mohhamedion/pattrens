@@ -75,18 +75,34 @@ $playList->addVideo(new Video('game of thrones 3','asdmasd'));
 $playList->addVideo(new Video('game of thrones 4','asdmasd'));
 
 
-echo "бесплатный аккауент \n ";
-echo $playList->play();
-echo "платный аккауент \n ";
-echo $proxyList->play();
-$playList->next();
+class User{
+    
+    public String $fullname;
+    public bool $premium;
+    
+    public function __construct($fullname,$premium){
+        $this->fullname  = $fullname;
+        $this->premium  = $premium;
+    }
+    
+    public function isPremium(){
+        return $this->premium;
+    }
+}
+$user = new User('Jack',false);
+$user2 = new User('mike',true);
+
+if($user->isPremium()){
+  echo "платный аккауент \n ";
+  echo $proxyList->play();
+}else{
+  echo "бесплатный аккауент \n ";
+  echo $playList->play();
+}
 
 
-echo "бесплатный аккауент \n ";
-echo $playList->play();
-echo "платный аккауент \n ";
-echo $proxyList->play();
-$playList->next();
 
+
+ 
 
 
