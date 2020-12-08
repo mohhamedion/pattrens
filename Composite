@@ -1,12 +1,10 @@
-  
 <?php
 // Your code here!
 interface VideoInterface {
     public function play();
 }
 
-
-class Video implements VideoInterface{
+class Video implements VideoInterface {
     public $name;
     public $author;
     
@@ -18,6 +16,37 @@ class Video implements VideoInterface{
     public function play(){
         return 'playing '.$this->name."\n";
     }
+    
+}
+
+class PlayList {
+
+    public $playList = [];
+    public $currentVideo = 0;
+    
+    public function addVideo($video){
+        $this->playList[] = $video;
+    }
+    
+    public function next(){
+        
+        if(isset($this->playList[$this->currentVideo+1])){
+           $this->currentVideo++;
+        }else{
+           $this->currentVideo=0;
+        }
+    }
+    
+    
+    public function prevent(){
+        if(isset($this->playList[$this->currentVideo-1])){
+           $this->currentVideo--;
+         }
+    }
+    
+    public function play(){
+        return $this->playList[$this->currentVideo]->play();
+     }
     
 }
 
@@ -35,46 +64,29 @@ class VideoProxy  implements VideoInterface {
 }
 
 
-class PlayList {
-
-    public $playList = [];
-    public $currentVideo = 0;
-    
-    public function addVideo(  $video){
-        $this->playList[] = $video;
-    }
-    
-    public function next(){
-        if(isset($this->playList[$this->currentVideo+1])){
-           $this->currentVideo++;
-        }else{
-           $this->currentVideo=0;
-        }
-    }
-    
-    
-    public function prevent(){
-        if(isset($this->playList[$this->currentVideo-1])){
-           $this->currentVideo--;
-         }
-    }
-    
-    public function play(){
-        return   $this->playList[$this->currentVideo]->play();
-     }
-    
-}
-
-
-
 
 $playList = new PlayList();
-$proxyList = new VideoProxy($playList);
-$playList->addVideo(new Video('gameOfTrhounse','asdmasd'));
-$playList->addVideo(new Video('gameOfTrhounse2','asdmasd'));
-$playList->addVideo(new Video('gameOfTrhounse3','asdmasd'));
-$playList->addVideo(new Video('gameOfTrhounse4','asdmasd'));
 
+$proxyList = new VideoProxy($playList);
+
+$playList->addVideo(new Video('game of thrones 1','asdmasd'));
+$playList->addVideo(new Video('game of thrones 2','asdmasd'));
+$playList->addVideo(new Video('game of thrones 3','asdmasd'));
+$playList->addVideo(new Video('game of thrones 4','asdmasd'));
+
+
+echo "бесплатный аккауент \n ";
 echo $playList->play();
-$playList->next();
+echo "платный аккауент \n ";
 echo $proxyList->play();
+$playList->next();
+
+
+echo "бесплатный аккауент \n ";
+echo $playList->play();
+echo "платный аккауент \n ";
+echo $proxyList->play();
+$playList->next();
+
+
+
