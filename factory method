@@ -2,12 +2,12 @@
 <?php
 
 
-interface YoutubeFactory{
+interface NetflexFactory{
     public function createVideoLibrary();
     public function createMuiscLibrary();
 }
 
-class YoutubeFactoryForAdults implements YoutubeFactory {
+class NetflexFactoryForAdults implements NetflexFactory {
     public function createVideoLibrary(){
         return new AdultVideoLibrary();
     }
@@ -16,7 +16,7 @@ class YoutubeFactoryForAdults implements YoutubeFactory {
     }
 }
 
-class YoutubeFactoryForChildren implements YoutubeFactory {
+class NetflexFactoryForChildren implements NetflexFactory {
      public function createVideoLibrary(){
         return new ChiledVideoLibrary();
     }
@@ -64,14 +64,14 @@ class ChiledMusicLibrary implements ILibrary {
 
 
     //
-    class YouTubeFactoryBuilder{
+    class NetflexFactoryBuilder{
         public $factory;
         
         public function __construct($visitorAge){
             if($visitorAge>=18){
-                $this->factory= new YoutubeFactoryForAdults();   
+                $this->factory= new NetflexFactoryForAdults();   
             }else{
-                $this->factory= new YoutubeFactoryForChildren();   
+                $this->factory= new NetflexFactoryForChildren();   
             }
         }
         
@@ -87,7 +87,7 @@ class ChiledMusicLibrary implements ILibrary {
 
 ///client code
     
-    $bulder = new YouTubeFactoryBuilder(rand(0,100));
+    $bulder = new NetflexFactoryBuilder(rand(0,100));
     $factory= $bulder->getFactory();
     $videoLibrary = $factory->createVideoLibrary();
     $musicLibrary = $factory->createMuiscLibrary();
