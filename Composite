@@ -1,108 +1,133 @@
 <?php
 // Your code here!
-interface VideoInterface {
-    public function play();
-}
+interface FileInterface {
+    public function getSize();
+    public function getName();
+ }
 
-class Video implements VideoInterface {
+class File implements FileInterface {
     public $name;
-    public $author;
+    public $size;
     
-    public function __construct($name,$author){
+    public function __construct($name,$size){
         $this->name=$name;
-        $this->minutes = $author;
+        $this->size = $size;
     }
     
-    public function play(){
-        return 'playing '.$this->name."\n";
+    public function getName(){
+        return $this->name;
+    }
+    
+    public function getSize(){
+        return $this->size;
+    }
+    
+    public function changeName($name){
+            return 'not allowed to change this file';
     }
     
 }
-
-class PlayList {
-
-    public $playList = [];
-    public $currentVideo = 0;
-    
-    public function addVideo($video){
-        $this->playList[] = $video;
-    }
-    
-    public function next(){
-        
-        if(isset($this->playList[$this->currentVideo+1])){
-           $this->currentVideo++;
-        }else{
-           $this->currentVideo=0;
-        }
-    }
-    
-    
-    public function prevent(){
-        if(isset($this->playList[$this->currentVideo-1])){
-           $this->currentVideo--;
-         }
-    }
-    
-    public function play(){
-        return $this->playList[$this->currentVideo]->play();
-     }
-    
-}
-
-
-class VideoProxy  implements VideoInterface {
-    public $videoList;
-    
-    public function __construct(PlayList $videoList){
-        $this->videoList = $videoList;
-    }
-    
-    public function play(){
-        return '1080 HD '.$this->videoList->playList[$this->videoList->currentVideo]->play();
-    }
-}
-
-
-
-$playList = new PlayList();
-
-$proxyList = new VideoProxy($playList);
-
-$playList->addVideo(new Video('game of thrones 1','asdmasd'));
-$playList->addVideo(new Video('game of thrones 2','asdmasd'));
-$playList->addVideo(new Video('game of thrones 3','asdmasd'));
-$playList->addVideo(new Video('game of thrones 4','asdmasd'));
-
-
-class User{
-    
-    public String $fullname;
-    public bool $premium;
-    
-    public function __construct($fullname,$premium){
-        $this->fullname  = $fullname;
-        $this->premium  = $premium;
-    }
-    
-    public function isPremium(){
-        return $this->premium;
-    }
-}
-$user = new User('Jack',false);
-$user2 = new User('mike',true);
-
-if($user->isPremium()){
-  echo "платный аккауент \n ";
-  echo $proxyList->play();
-}else{
-  echo "бесплатный аккауент \n ";
-  echo $playList->play();
-}
-
-
-
-
  
+class Collection implements FileInterface{
+
+    public $files = [];
+    public $name;
+    public bool $owner;
+    
+    public function __construct($name, $owner = false){
+        $this->owner = $owner;
+        $this->name = $name;
+    }
+    
+    public function addFile($file){
+        $this->files[] = $file;
+       
+    }
+    
+    public function getSize(){
+      
+        $totalSize=0;
+        foreach ($this->files as $file){
+            $totalSize += $file->getSize();
+        }
+        return $totalSize;
+     }
+     
+     
+     
+    public function getFile($index){
+        
+        if($this->owner){
+            return new FileProxy($this->files[$index]);
+        }else{
+            return $this->files[$index];
+        }
+        
+    }
+    
+    
+     public function getName(){
+        return $this->name;
+    }
+ 
+ 
+}
 
 
+
+class FileProxy implements FileInterface{
+    public $file;
+    
+    public function __construct($file){
+        $this->file = $file;
+    }
+    
+    public function getSize(){
+        return $this->file->size;
+    }
+    
+    public function getName(){
+        return $this->file->name;
+    }
+    
+    public function changeName($name){
+         $this->file->name=$name;
+         return 'file name changed';
+    }
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+echo "В случаи если пользователь не имеет доступ к методам редактирования \n";
+
+$collection  = new Collection('homeworks');
+
+$collection->addFile(new File('physics',100));
+$collection->addFile(new File('math',100));
+$file1 = $collection->getFile(0);
+
+echo $collection->getSize()."\n";
+echo $file1->getName()."\n";
+echo $file1->changeName('changed file')."\n";
+
+echo "В случаи если пользователь имеет доступ к всем методам \n";
+
+$collection2  = new Collection('homeworks',true);
+
+$collection2->addFile(new File('physics',100));
+$collection2->addFile(new File('math',100));
+$file2 = $collection2->getFile(0);
+
+echo $collection2->getSize()."\n";
+echo $file2->getName()."\n";
+echo $file2->changeName('changed file')."\n";
